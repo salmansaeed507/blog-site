@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve api",
+    "start": "npx nx serve api",
     "build": "nx run-many --target=build --all",
     "test": "nx test"
   },
