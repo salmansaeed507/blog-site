@@ -27,7 +27,7 @@ export class FileUploadController {
         validators: [new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 })], //10mb
       }),
     )
-    file: Multer.File,
+    file: Express.Multer.File,
   ): UploadedFileType {
     return { ...file, url: this.fileUploadService.getFileUrl(file.filename) };
   }
@@ -43,7 +43,7 @@ export class FileUploadController {
         ],
       }),
     )
-    file: Multer.File,
+    file: Express.Multer.File,
   ): UploadedFileType {
     return this.uploadFile(file);
   }
