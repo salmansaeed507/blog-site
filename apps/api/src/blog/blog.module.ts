@@ -19,7 +19,8 @@ import BlogSearchService from './blog-search.service';
     ElasticsearchModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        if (process.env.NODE_ENV == 'production') {
+        const cloudId = configService.get('ELASTICSEARCH_CLOUD_ID');
+        if (cloudId) {
           return {
             cloud: {
               id: configService.get('ELASTICSEARCH_CLOUD_ID'),
