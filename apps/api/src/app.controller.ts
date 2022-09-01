@@ -8,4 +8,11 @@ export class AppController {
   index() {
     return 'Hello World';
   }
+
+  @Public()
+  @Get("hello")
+  Hello() {
+    console.log("Node env: ", process.env["NODE_ENV"])
+    return "node env: " + process.env["NODE_ENV"];
+  }
 }
