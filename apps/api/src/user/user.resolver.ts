@@ -28,7 +28,7 @@ export class UserResolver {
   async login(
     @Args('username') username: string,
     @Args('password') password: string,
-    @Context('req') { user }: Request,
+    @Context('req') { user }: any,
   ): Promise<string> {
     return this.authService.login(user as User);
   }
