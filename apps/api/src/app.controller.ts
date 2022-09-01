@@ -6,6 +6,6 @@ export class AppController {
   @Public()
   @Get()
   index() {
-    return 'Hello World';
+    return 'Hello Worlds';
   }
 }
