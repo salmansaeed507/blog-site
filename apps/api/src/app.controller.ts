@@ -12,7 +12,7 @@ export class AppController {
   @Public()
   @Get("hello")
   Hello() {
-    console.log("Node env: ", process.env["NODE_ENV"])
-    return "node env: " + process.env["NODE_ENV"];
+    console.log("Node envs: ", process.env["NODE_ENV"])
+    return "node envs: " + process.env["NODE_ENV"];
   }
 }
