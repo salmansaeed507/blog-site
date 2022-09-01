@@ -7,8 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.use('/', express.static(join(__dirname, '../../../dist/apps/frontend')));
-  app.listen(parseInt(process.env.PORT) || 3000).then(async () => {
-    console.log(`server listening on ${await app.getUrl()}`);
-  });
+  app.use('/public', express.static('./uploads'));
+  app.listen(parseInt(process.env.PORT) || 3000)
 }
 bootstrap();

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Home } from './Home';
@@ -27,15 +27,15 @@ function App() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                        <a className="nav-link active" aria-current="page" href="/">Home</a>
+                      <Link to="/" className="nav-link">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/blogs">Blogs</a>
+                      <Link to="/blogs" className="nav-link">Blogs</Link>
                     </li>
                     <li className="nav-item">
                         { isAuthenticated() ?
                          <Button variant='link' onClick={() => logoutUser().then(() => navigate("/")) }>Logout</Button> : 
-                         <a className="nav-link disabled" href="/login">Login</a> }
+                         <Link to="/login" className="nav-link">Login</Link> }
                     </li>
                 </ul>
                 </div>
