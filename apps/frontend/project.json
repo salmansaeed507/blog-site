@@ -6,8 +6,7 @@
     "build": {
       "executor": "@nrwl/web:webpack",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "inputs": [{"env": "PORT"}],
+      "defaultConfiguration": "development",
       "options": {
         "compiler": "babel",
         "outputPath": "dist/apps/frontend",
@@ -46,7 +45,6 @@
     "serve": {
       "executor": "@nrwl/web:dev-server",
       "defaultConfiguration": "development",
-      "inputs": [{"env": "PORT"}],
       "options": {
         "buildTarget": "frontend:build",
         "port": 3001,
