@@ -31,7 +31,7 @@ const LOAD_COMMENTS = gql`
 export function BlogComments(props: {comments?: {data: any[], nextCursor: string}, blogId: string}) {
 
     const [comments, setComments] = useState(props?.comments?.data || [])
-    const [cursor, setCursor] = useState(props?.comments?.nextCursor || [])
+    const [cursor, setCursor] = useState(props?.comments?.nextCursor || "")
 
     const [loadComments, { loading, error, data, called }] = useLazyQuery(LOAD_COMMENTS, {
         onCompleted(data) {
