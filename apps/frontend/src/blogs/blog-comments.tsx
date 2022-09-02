@@ -5,40 +5,39 @@ import { Comment } from "../Comment"
 import { PostComment } from "../PostComment"
 
 const LOAD_COMMENTS = gql`
-    query GetComments($blogId: String!, $offset: Int ){
+    query GetComments($blogId: String!, $cursor: String ){
         blog(blogId: $blogId){
-            comments(offset: $offset) {
-                id
-                comment
-                user {
-                    email
-                }
-                replies {
+            comments(cursor: $cursor) {
+                data {
                     id
                     comment
                     user {
                         email
                     }
+                    replies {
+                        id
+                        comment
+                        user {
+                            email
+                        }
+                    }
                 }
+                nextCursor
             }
         }   
     }
 `;
 
-export function BlogComments(props: {comments?: any[], blogId: string}) {
+export function BlogComments(props: {comments?: {data: any[], nextCursor: string}, blogId: string}) {
 
-    const [comments, setComments] = useState(props.comments || [])
-    const [offset, setOffset] = useState(5)
-    const [isCommentsFinished, setIsCommentsFinished] = useState(false)
+    const [comments, setComments] = useState(props?.comments?.data || [])
+    const [cursor, setCursor] = useState(props?.comments?.nextCursor || [])
 
     const [loadComments, { loading, error, data, called }] = useLazyQuery(LOAD_COMMENTS, {
         onCompleted(data) {
-            const c = data.blog.comments
+            const c = data.blog.comments.data
             setComments(arr => [...arr, ...c])
-            if (c.length < 5) {
-                setIsCommentsFinished(true)
-            }
-            setOffset(offset + 5)
+            setCursor(data.blog.comments.nextCursor)
         },
     });
 
@@ -49,11 +48,11 @@ export function BlogComments(props: {comments?: any[], blogId: string}) {
                 {comments.map(function(cmt: any, i: number) {
                     return <Comment comment={cmt} key={i+"c"} />
                 })}
-                { !isCommentsFinished && <Button variant="link" onClick={() => {
+                { cursor && <Button variant="link" onClick={() => {
                     loadComments({
                         variables:{
                             blogId: props.blogId,
-                            offset
+                            cursor
                         }
                     })
                 }}>Load More</Button> }

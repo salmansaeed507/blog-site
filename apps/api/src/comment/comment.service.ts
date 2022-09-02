@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CursorPaginationArgs } from '../cursor-pagination.args';
 import { SimplePaginationArgs } from '../simple-pagination.args';
 import { User } from '../user/entities/user.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { PostCommentInput } from './dto/post-comment.input';
 import { Comment } from './entities/comment.entity';
 import { Reply } from './entities/reply.entity';
@@ -107,9 +107,8 @@ export class CommentService {
       paginationArgs,
       function (query, cursor) {
         const date = new Date(Buffer.from(cursor, 'base64').toString('ascii'));
-        date.setMilliseconds(date.getMilliseconds() + 1);
         query.andWhere({
-          createdAt: MoreThan(date),
+          createdAt: MoreThanOrEqual(date),
         });
       },
       function (comment: Comment) {

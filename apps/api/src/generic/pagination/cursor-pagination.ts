@@ -7,8 +7,8 @@ export function CursorPagination<T>(ItemType: Type<T>): any {
     @Field(() => [ItemType])
     data: T[];
 
-    @Field(() => String, { nullable: true })
-    nextCursor: string | null;
+    @Field(() => String)
+    nextCursor: string;
   }
 
   return PageClass;

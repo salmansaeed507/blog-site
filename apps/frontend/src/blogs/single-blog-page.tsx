@@ -5,8 +5,6 @@ export function SingleBlogPage() {
     const {id} = useParams()
 
     return (
-        <>
-            <SingleBlog id={id}/>
-        </>
+        <SingleBlog id={id}/>
     )
 }

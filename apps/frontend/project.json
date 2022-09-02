@@ -43,14 +43,12 @@
       }
     },
     "dev": {
-      "executor": "@nrwl/web:dev-server",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "frontend:build:development",
-        "port": 3001,
-        "hmr": true
+        "command": "nx run frontend:build:development --watch true"
       }
-    },
-    "serve": {
+    }, 
+    "devserve": {
       "executor": "@nrwl/web:dev-server",
       "defaultConfiguration": "development",
       "options": {

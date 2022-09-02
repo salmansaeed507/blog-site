@@ -16,18 +16,21 @@ const GET_BLOG = gql`
                 email
             }
             comments {
-                id
-                comment
-                user {
-                    email
-                }
-                replies {
+                data {
                     id
                     comment
                     user {
                         email
                     }
+                    replies {
+                        id
+                        comment
+                        user {
+                            email
+                        }
+                    }
                 }
+                nextCursor
             }
         }   
     }

@@ -53,7 +53,7 @@ type Blog {
 
 type CommentCursorPagination {
   data: [Comment!]!
-  nextCursor: String
+  nextCursor: String!
 }
 
 type Query {

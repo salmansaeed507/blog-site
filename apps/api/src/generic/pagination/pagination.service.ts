@@ -22,7 +22,7 @@ export class PaginationService {
    * function (comment: Comment) {
         return Buffer.from(comment.createdAt.toISOString()).toString('base64');
     }
-   * @returns Promise<{ data: T[]; nextCursor: string | null }> which can be mapped to EntityCursorPagination e.g CommentCursorPagination
+   * @returns Promise<{ data: T[]; nextCursor: string }> which can be mapped to EntityCursorPagination e.g CommentCursorPagination
    */
   async cursorPaginate<T = any>(
     query: SelectQueryBuilder<T>,
@@ -32,8 +32,8 @@ export class PaginationService {
       cursor: string | null
     ) => void,
     generateCursorFunc: (data: any) => string
-  ): Promise<{ data: T[]; nextCursor: string | null }> {
-    let nextCursor: string | null = null;
+  ): Promise<{ data: T[]; nextCursor: string }> {
+    let nextCursor = '';
     query.limit(paginationArgs.count + 1);
     if (paginationArgs.cursor) {
       cursorLimitFunc(query, paginationArgs.cursor);
