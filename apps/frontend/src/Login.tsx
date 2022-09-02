@@ -28,7 +28,6 @@ export function Login() {
         <form className="login-form" onSubmit={(e) => loginHandler(e)}>
             <Row>
                 <Col className="col-3 offset-4">
-                    {process.env['NODE_ENV']}
                     {
                     isError && 
                     <Alert variant="danger">
