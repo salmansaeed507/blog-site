@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CursorPaginationArgs } from '../cursor-pagination.args';
 import { SimplePaginationArgs } from '../simple-pagination.args';
 import { User } from '../user/entities/user.entity';
-import { LessThan, MoreThan, Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { PostCommentInput } from './dto/post-comment.input';
-import { CommentEdge } from './entities/comment.edge';
 import { Comment } from './entities/comment.entity';
 import { Reply } from './entities/reply.entity';
+import { CommentCursorPagination } from './comments-cursor-pagination';
+import { PaginationService } from '../generic/pagination/pagination.service';
 
 @Injectable()
 export class CommentService {
@@ -15,6 +16,7 @@ export class CommentService {
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
     @InjectRepository(Reply) private readonly replyRepo: Repository<Reply>,
+    private readonly paginationService: PaginationService
   ) {}
 
   /**
@@ -27,7 +29,7 @@ export class CommentService {
   async postComment(
     { userId }: User,
     blogId: string,
-    postCommentInput: PostCommentInput,
+    postCommentInput: PostCommentInput
   ): Promise<Comment> {
     const comment = { userId, blogId, ...postCommentInput };
     return this.commentRepo.save(comment);
@@ -75,7 +77,7 @@ export class CommentService {
    */
   async getComments(
     blogId: string,
-    paginationArgs: SimplePaginationArgs = { limit: 0, offset: 0 },
+    paginationArgs: SimplePaginationArgs = { limit: 0, offset: 0 }
   ): Promise<Comment[]> {
     return this.commentRepo.find({
       where: { blogId },
@@ -89,47 +91,31 @@ export class CommentService {
    * Fetches comments against blog by UUID with cursor based pagination
    * @param blogId string
    * @param paginationArgs CursorPaginationArgs
-   * @returns Promise<CommentEdge[]>
+   * @returns Promise<CommentCursorPagination>
    */
   async getCommentsCursored(
     blogId: string,
-    paginationArgs: CursorPaginationArgs = { limit: 0 },
-  ): Promise<CommentEdge[]> {
+    paginationArgs: CursorPaginationArgs = { count: 0 }
+  ): Promise<CommentCursorPagination> {
     const query = this.commentRepo
       .createQueryBuilder()
       .where({ blogId })
-      .orderBy('Comment.createdAt')
-      .limit(paginationArgs.limit);
-    if (paginationArgs.after) {
-      const date = new Date(
-        Buffer.from(paginationArgs.after, 'base64').toString('ascii'),
-      );
-      date.setMilliseconds(date.getMilliseconds() + 1);
-      query.andWhere({
-        createdAt: MoreThan(date),
-      });
-    }
-    if (paginationArgs.before) {
-      const date = new Date(
-        Buffer.from(paginationArgs.before, 'base64').toString('ascii'),
-      );
-      date.setMilliseconds(date.getMilliseconds() - 1);
-      query.andWhere({
-        createdAt: LessThan(date),
-      });
-      query.orderBy('Comment.createdAt', 'DESC');
-    }
-    const comments = await query.getMany();
-    if (paginationArgs.before) {
-      comments.reverse();
-    }
+      .orderBy('Comment.createdAt');
 
-    return comments.map((comment) => {
-      return {
-        node: comment,
-        cursor: Buffer.from(comment.createdAt.toISOString()).toString('base64'),
-      };
-    });
+    return this.paginationService.cursorPaginate(
+      query,
+      paginationArgs,
+      function (query, cursor) {
+        const date = new Date(Buffer.from(cursor, 'base64').toString('ascii'));
+        date.setMilliseconds(date.getMilliseconds() + 1);
+        query.andWhere({
+          createdAt: MoreThan(date),
+        });
+      },
+      function (comment: Comment) {
+        return Buffer.from(comment.createdAt.toISOString()).toString('base64');
+      }
+    );
   }
 
   /**

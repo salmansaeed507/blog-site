@@ -20,10 +20,10 @@ import * as DataLoader from 'dataloader';
 import { Roles } from '../user/roles.decorator';
 import { Role } from '../user/role.enum';
 import { SimplePaginationArgs } from '../simple-pagination.args';
-import { CommentEdge } from '../comment/entities/comment.edge';
 import { CursorPaginationArgs } from '../cursor-pagination.args';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { NotEmptyPipe } from '../not-empty.pipe';
+import { CommentCursorPagination } from '../comment/comments-cursor-pagination';
 
 @Resolver(() => Blog)
 export class BlogResolver {
@@ -32,14 +32,14 @@ export class BlogResolver {
     private readonly commentService: CommentService,
     @Inject('UserLoader')
     private readonly dataLoader: DataLoader<string, User>,
-    private readonly fileUploadService: FileUploadService,
+    private readonly fileUploadService: FileUploadService
   ) {}
 
   @Roles(Role.Admin, Role.User)
   @Mutation(() => Blog)
   async createBlog(
     @AuthUser() user: User,
-    @Args('createBlogInput') createBlogInput: CreateBlogInput,
+    @Args('createBlogInput') createBlogInput: CreateBlogInput
   ): Promise<Blog> {
     return this.blogService.create(user, createBlogInput);
   }
@@ -49,7 +49,7 @@ export class BlogResolver {
   async updateBlog(
     @Args('blogId', ParseUUIDPipe, BlogExistPipe)
     blogId: string,
-    @Args('updateBlogInput') updateBlogInput: UpdateBlogInput,
+    @Args('updateBlogInput') updateBlogInput: UpdateBlogInput
   ): Promise<Blog> {
     return this.blogService.update(blogId, updateBlogInput);
   }
@@ -59,7 +59,7 @@ export class BlogResolver {
   async removeBlog(
     @AuthUser() user: User,
     @Args('blogId', ParseUUIDPipe, BlogExistPipe)
-    blogId: string,
+    blogId: string
   ): Promise<boolean> {
     return this.blogService.remove(user, blogId);
   }
@@ -72,7 +72,7 @@ export class BlogResolver {
 
   @Query(() => Blog, { name: 'blog', nullable: true })
   async findOne(
-    @Args('blogId', ParseUUIDPipe) blogId: string,
+    @Args('blogId', ParseUUIDPipe) blogId: string
   ): Promise<Blog | null> {
     return this.blogService.findOne(blogId);
   }
@@ -84,7 +84,7 @@ export class BlogResolver {
 
   @Query(() => [Blog], { name: 'search' })
   async search(
-    @Args('keyword', NotEmptyPipe) keyword: string,
+    @Args('keyword', NotEmptyPipe) keyword: string
   ): Promise<Blog[]> {
     return this.blogService.search(keyword);
   }
@@ -94,19 +94,19 @@ export class BlogResolver {
     return this.dataLoader.load(userId);
   }
 
-  @ResolveField('comments', () => [Comment])
-  async getComments(
+  @ResolveField('commentsOffset', () => [Comment])
+  async getCommentsOffset(
     @Parent() { id }: Blog,
-    @Args() paginationArgs: SimplePaginationArgs,
+    @Args() paginationArgs: SimplePaginationArgs
   ): Promise<Comment[]> {
     return this.commentService.getComments(id, paginationArgs);
   }
 
-  @ResolveField('commentsCursored', () => [CommentEdge])
-  async getCommentsCursored(
+  @ResolveField('comments', () => CommentCursorPagination)
+  async getComments(
     @Parent() { id }: Blog,
-    @Args() paginationArgs: CursorPaginationArgs,
-  ): Promise<CommentEdge[]> {
+    @Args() paginationArgs: CursorPaginationArgs
+  ): Promise<CommentCursorPagination> {
     return this.commentService.getCommentsCursored(id, paginationArgs);
   }
 

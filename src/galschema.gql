@@ -45,15 +45,15 @@ type Blog {
   imageUrl: String!
   userId: String!
   user: User
-  comments(offset: Int = 0, limit: Int = 5): [Comment!]!
+  comments(cursor: String, count: Int = 5): CommentCursorPagination!
   createdAt: DateTime!
   updatedAt: DateTime!
-  commentsCursored(before: String, after: String, limit: Int = 5): [CommentEdge!]!
+  commentsOffset(offset: Int = 0, limit: Int = 5): [Comment!]!
 }
 
-type CommentEdge {
-  node: Comment!
-  cursor: String!
+type CommentCursorPagination {
+  data: [Comment!]!
+  nextCursor: String
 }
 
 type Query {
