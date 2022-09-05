@@ -24,12 +24,11 @@ export class BlogSubscriber implements EntitySubscriberInterface<Blog> {
   }
 
   afterInsert(event: InsertEvent<Blog>): void | Promise<any> {
-    this.blogSearchService.index(event.entity);
     this.blogGateway.emitBlogCreated(event.entity);
-    return;
+    this.blogSearchService.index(event.entity);
   }
 
   afterRemove(event: RemoveEvent<Blog>): void | Promise<any> {
-    return this.blogSearchService.remove(event.entity.id);
+    this.blogSearchService.remove(event.entity.id);
   }
 }
