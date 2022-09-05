@@ -1,1 +1,1 @@
-worker: npm run command api elastic-sync
+release: npm run command api elastic-sync
