@@ -43,9 +43,7 @@ export class BlogResolver {
     @AuthUser() user: User,
     @Args('createBlogInput') createBlogInput: CreateBlogInput
   ): Promise<Blog> {
-    const blog = await this.blogService.create(user, createBlogInput);
-    this.blogGateway.emitBlogCreated(blog);
-    return blog;
+    return await this.blogService.create(user, createBlogInput);
   }
 
   @Roles(Role.Admin, Role.User)

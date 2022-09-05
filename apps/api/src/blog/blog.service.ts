@@ -28,9 +28,7 @@ export class BlogService {
     { userId }: User,
     createBlogInput: CreateBlogInput
   ): Promise<Blog> {
-    const blog = await this.blogRepo.save({ userId, ...createBlogInput });
-    this.blogSearchService.index(blog);
-    return blog;
+    return this.blogRepo.save({ userId, ...createBlogInput });
   }
 
   /**
@@ -65,7 +63,6 @@ export class BlogService {
   async remove({ userId }: User, id: string): Promise<boolean> {
     const deleteResult = await this.blogRepo.delete({ id, userId });
     await this.commentService.removeAllByBlogId(id);
-    await this.blogSearchService.remove(id);
     return deleteResult.affected > 0;
   }
 

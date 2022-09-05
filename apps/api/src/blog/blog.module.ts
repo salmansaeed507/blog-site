@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import BlogSearchService from './blog-search.service';
 import { BlogGateway } from './blog.gateway';
+import { BlogSubscriber } from './subscribers/blog.subscriber';
 
 @Module({
   imports: [
@@ -43,7 +44,13 @@ import { BlogGateway } from './blog.gateway';
       inject: [ConfigService],
     }),
   ],
-  providers: [BlogResolver, BlogService, BlogSearchService, BlogGateway],
+  providers: [
+    BlogResolver,
+    BlogService,
+    BlogSearchService,
+    BlogGateway,
+    BlogSubscriber,
+  ],
   exports: [BlogService],
 })
 export class BlogModule {}
