@@ -9,6 +9,7 @@ import { FileUploadModule } from '../file-upload/file-upload.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import BlogSearchService from './blog-search.service';
+import { BlogGateway } from './blog.gateway';
 
 @Module({
   imports: [
@@ -42,7 +43,7 @@ import BlogSearchService from './blog-search.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [BlogResolver, BlogService, BlogSearchService],
+  providers: [BlogResolver, BlogService, BlogSearchService, BlogGateway],
   exports: [BlogService],
 })
 export class BlogModule {}

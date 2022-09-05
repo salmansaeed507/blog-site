@@ -24,6 +24,7 @@ import { CursorPaginationArgs } from '../cursor-pagination.args';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { NotEmptyPipe } from '../not-empty.pipe';
 import { CommentCursorPagination } from '../comment/comments-cursor-pagination';
+import { BlogGateway } from './blog.gateway';
 
 @Resolver(() => Blog)
 export class BlogResolver {
@@ -32,7 +33,8 @@ export class BlogResolver {
     private readonly commentService: CommentService,
     @Inject('UserLoader')
     private readonly dataLoader: DataLoader<string, User>,
-    private readonly fileUploadService: FileUploadService
+    private readonly fileUploadService: FileUploadService,
+    private readonly blogGateway: BlogGateway
   ) {}
 
   @Roles(Role.Admin, Role.User)
@@ -41,7 +43,9 @@ export class BlogResolver {
     @AuthUser() user: User,
     @Args('createBlogInput') createBlogInput: CreateBlogInput
   ): Promise<Blog> {
-    return this.blogService.create(user, createBlogInput);
+    const blog = await this.blogService.create(user, createBlogInput);
+    this.blogGateway.emitBlogCreated(blog);
+    return blog;
   }
 
   @Roles(Role.Admin, Role.User)

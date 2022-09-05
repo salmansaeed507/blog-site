@@ -28,6 +28,9 @@ const { entities, migrations, ...options } = dataSourceOptions;
       driver: ApolloDriver,
       autoSchemaFile: './src/galschema.gql',
       playground: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,

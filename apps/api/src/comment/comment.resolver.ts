@@ -5,6 +5,7 @@ import {
   Parent,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
 import { AuthUser } from '../user/auth/graphql-auth-user.decorator';
 import { BlogExistPipe } from '../blog/blog-exist.pipe';
@@ -19,13 +20,16 @@ import { Roles } from '../user/roles.decorator';
 import { Role } from '../user/role.enum';
 import { Reply } from './entities/reply.entity';
 import { GenericService } from '../generic/generic.service';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver(() => Comment)
 export class CommentResolver {
   constructor(
     private readonly commentService: CommentService,
     @Inject('UserLoader') private readonly userLoader: DataLoader<string, User>,
-    private readonly genericService: GenericService,
+    private readonly genericService: GenericService
   ) {}
 
   /**
@@ -42,17 +46,23 @@ export class CommentResolver {
     @AuthUser() user: User,
     @Args('blogId', ParseUUIDPipe, BlogExistPipe)
     blogId: string,
-    @Args('postCommentInput') postCommentInput: PostCommentInput,
+    @Args('postCommentInput') postCommentInput: PostCommentInput
   ): Promise<Comment> {
     if (
       postCommentInput.parentCommentId &&
       !(await this.commentService.commentExists(
-        postCommentInput.parentCommentId,
+        postCommentInput.parentCommentId
       ))
     ) {
       throw new BadRequestException();
     }
-    return this.commentService.postComment(user, blogId, postCommentInput);
+    const comment = await this.commentService.postComment(
+      user,
+      blogId,
+      postCommentInput
+    );
+    pubSub.publish('commentAdded', { commentAdded: comment });
+    return comment;
   }
 
   /**
@@ -67,11 +77,16 @@ export class CommentResolver {
   async updateComment(
     @Args('commentId', ParseUUIDPipe, CommentExistPipe)
     id: string,
-    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
+    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput
   ): Promise<Comment> {
     await this.genericService.update(Comment, id, updateCommentInput);
     const comment = await this.genericService.findOne(Comment, id);
     return comment;
+  }
+
+  @Subscription(() => Comment)
+  commentAdded() {
+    return pubSub.asyncIterator('commentAdded');
   }
 
   /**
@@ -85,7 +100,7 @@ export class CommentResolver {
   deleteComment(
     @AuthUser() user: User,
     @Args('commentId', ParseUUIDPipe, CommentExistPipe)
-    commentId: string,
+    commentId: string
   ): Promise<boolean> {
     return this.commentService.remove(user, commentId);
   }

@@ -117,3 +117,7 @@ input UpdateReplyInput {
   comment: String
   parentCommentId: String
 }
+
+type Subscription {
+  commentAdded: Comment!
+}

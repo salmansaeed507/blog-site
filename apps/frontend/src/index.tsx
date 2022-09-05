@@ -11,9 +11,9 @@ const client = new ApolloClient({
   uri: process.env['NX_GRAPHQL_URL'],
   cache: new InMemoryCache(),
   headers: {
-    "Authorization": "Bearer " + getToken()
-  }
-})
+    Authorization: 'Bearer ' + getToken(),
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
