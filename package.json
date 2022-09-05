@@ -6,7 +6,8 @@
     "start": "nx serve api",
     "dev": "nx run-many --target=dev --all",
     "build": "nx run-many --target=build --all",
-    "test": "nx test"
+    "test": "nx test",
+    "command": "nx command"
   },
   "private": true,
   "devDependencies": {

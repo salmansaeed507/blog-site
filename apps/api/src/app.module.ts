@@ -14,6 +14,7 @@ import { RolesGuard } from './user/roles.guard';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { GenericModule } from './generic/generic.module';
 import { AppController } from './app.controller';
+import { CommandModule } from './command/command.module';
 
 const { entities, migrations, ...options } = dataSourceOptions;
 
@@ -36,6 +37,7 @@ const { entities, migrations, ...options } = dataSourceOptions;
     CommentModule,
     FileUploadModule,
     GenericModule,
+    CommandModule,
   ],
   controllers: [AppController],
   providers: [

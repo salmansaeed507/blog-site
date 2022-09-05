@@ -15,7 +15,7 @@ export class BlogService {
     @InjectRepository(Blog) private readonly blogRepo: Repository<Blog>,
     private readonly commentService: CommentService,
     private readonly blogSearchService: BlogSearchService,
-    private readonly genericService: GenericService,
+    private readonly genericService: GenericService
   ) {}
 
   /**
@@ -26,7 +26,7 @@ export class BlogService {
    */
   async create(
     { userId }: User,
-    createBlogInput: CreateBlogInput,
+    createBlogInput: CreateBlogInput
   ): Promise<Blog> {
     const blog = await this.blogRepo.save({ userId, ...createBlogInput });
     this.blogSearchService.index(blog);
@@ -42,12 +42,12 @@ export class BlogService {
    */
   async update(
     blogId: string,
-    updateBlogInput: UpdateBlogInput,
+    updateBlogInput: UpdateBlogInput
   ): Promise<Blog> {
     const isUpdated = await this.genericService.update(
       Blog,
       blogId,
-      updateBlogInput,
+      updateBlogInput
     );
     const blog = await this.findOne(blogId);
     if (isUpdated) {
@@ -101,7 +101,8 @@ export class BlogService {
    * @returns Promise<boolean>
    */
   async elasticSync(): Promise<boolean> {
-    const blogs = await this.blogRepo.find();
-    return this.blogSearchService.sync(blogs);
+    return true;
+    // const blogs = await this.blogRepo.find();
+    // return this.blogSearchService.sync(blogs);
   }
 }

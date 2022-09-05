@@ -1,0 +1,1 @@
+worker: npm run command api elastic-sync

@@ -82,8 +82,8 @@ export default class BlogSearchService {
    * @returns Promise<boolean>
    */
   async sync(blogs: Blog[]): Promise<boolean> {
-    blogs.map((blog) => {
-      this.index(blog);
+    blogs.map(async (blog) => {
+      await this.index(blog);
     });
     return true;
   }

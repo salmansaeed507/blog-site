@@ -14,6 +14,9 @@
         "assets": ["apps/api/src/assets"]
       },
       "configurations": {
+        "development": {
+          "watch": true
+        },
         "production": {
           "optimization": true,
           "extractLicenses": true,
@@ -31,6 +34,12 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "node ./dist/apps/api/main.js"
+      }
+    },
+    "command": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ./dist/apps/api/main.js command"
       }
     },
     "dev": {
