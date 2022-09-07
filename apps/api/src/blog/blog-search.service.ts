@@ -71,7 +71,13 @@ export default class BlogSearchService {
         query: {
           multi_match: {
             query: text,
-            fields: ['title', 'description', 'shortDescription', 'content'],
+            fields: [
+              'title',
+              'description',
+              'shortDescription',
+              'content',
+              'user.email',
+            ],
           },
         },
       },
