@@ -37,7 +37,7 @@ import { LocalStrategy } from './auth/local.strategy';
       provide: 'UserLoader',
       useFactory: (userService: UserService) => {
         return new DataLoader<string, User>((keys: string[]) =>
-          userService.batchLoadFunc(keys),
+          userService.batchLoadFunc(keys)
         );
       },
       inject: [UserService],
