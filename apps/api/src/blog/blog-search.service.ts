@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { UserService } from '../user/user.service';
 import { Blog } from './entities/blog.entity';
 
 @Injectable()
 export default class BlogSearchService {
   indexName = 'blogs';
 
-  constructor(private readonly elasticsearchService: ElasticsearchService) {}
+  constructor(
+    private readonly elasticsearchService: ElasticsearchService,
+    private readonly userService: UserService
+  ) {}
 
   /**
    * Indexes a blog in elasticsearch index
@@ -14,6 +18,7 @@ export default class BlogSearchService {
    * @returns Promise<boolean>
    */
   async index(blog: Blog): Promise<boolean> {
+    blog.user = await this.userService.findById(blog.userId);
     const result = await this.elasticsearchService.index<Blog>({
       id: blog.id,
       index: this.indexName,
