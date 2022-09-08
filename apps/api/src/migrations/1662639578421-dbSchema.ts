@@ -1,9 +1,12 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class dbSchema1662638409290 implements MigrationInterface {
-  name = 'dbSchema1662638409290';
+export class dbSchema1662639578421 implements MigrationInterface {
+  name = 'dbSchema1662639578421';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TYPE "public"."app_users_role_enum" AS ENUM('user', 'admin')`
+    );
     await queryRunner.query(
       `CREATE TABLE "app_users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "email" character varying(50) NOT NULL, "password" character varying(100) NOT NULL, "role" "public"."app_users_role_enum", "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9b97e4fbff9c2f3918fda27f999" PRIMARY KEY ("id"))`
     );
@@ -41,5 +44,6 @@ export class dbSchema1662638409290 implements MigrationInterface {
       `DROP INDEX "public"."IDX_3bc5d83878db282dd77de09046"`
     );
     await queryRunner.query(`DROP TABLE "app_users"`);
+    await queryRunner.query(`DROP TYPE "public"."app_users_role_enum"`);
   }
 }
