@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticSyncEntity } from '../generic/entities/elastic-sync-log.entity';
+import { GenericService } from '../generic/generic.service';
 import { UserService } from '../user/user.service';
 import { Blog } from './entities/blog.entity';
 
@@ -9,7 +11,8 @@ export default class BlogSearchService {
 
   constructor(
     private readonly elasticsearchService: ElasticsearchService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly genericService: GenericService
   ) {}
 
   /**
@@ -24,6 +27,12 @@ export default class BlogSearchService {
       index: this.indexName,
       document: blog,
     });
+    if (result.result == 'created') {
+      await this.genericService.createElasticSyncLog(
+        ElasticSyncEntity.blog,
+        blog.id
+      );
+    }
     return result.result == 'created';
   }
 
@@ -53,6 +62,12 @@ export default class BlogSearchService {
         index: this.indexName,
         id,
       });
+      if (result.result == 'deleted') {
+        await this.genericService.deleteElasticSyncLog(
+          ElasticSyncEntity.blog,
+          id
+        );
+      }
       return result.result == 'deleted';
     } catch (e) {
       return false;

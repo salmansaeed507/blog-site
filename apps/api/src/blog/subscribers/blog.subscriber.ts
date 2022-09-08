@@ -29,6 +29,6 @@ export class BlogSubscriber implements EntitySubscriberInterface<Blog> {
   }
 
   afterRemove(event: RemoveEvent<Blog>): void | Promise<any> {
-    this.blogSearchService.remove(event.entity.id);
+    this.blogSearchService.remove(event.entityId);
   }
 }

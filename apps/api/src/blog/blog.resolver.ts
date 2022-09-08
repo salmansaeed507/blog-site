@@ -59,11 +59,10 @@ export class BlogResolver {
   @Roles(Role.Admin)
   @Mutation(() => Boolean)
   async removeBlog(
-    @AuthUser() user: User,
     @Args('blogId', ParseUUIDPipe, BlogExistPipe)
     blogId: string
   ): Promise<boolean> {
-    return this.blogService.remove(user, blogId);
+    return this.blogService.remove(blogId);
   }
 
   @Roles(Role.Admin)

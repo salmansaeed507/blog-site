@@ -60,10 +60,14 @@ export class BlogService {
    * @param blogId
    * @returns boolean
    */
-  async remove({ userId }: User, id: string): Promise<boolean> {
-    const deleteResult = await this.blogRepo.delete({ id, userId });
+  async remove(id: string): Promise<boolean> {
+    const blog = await this.blogRepo.findOneBy({ id });
+    if (!blog) {
+      return false;
+    }
+    const result = await this.blogRepo.remove(blog);
     await this.commentService.removeAllByBlogId(id);
-    return deleteResult.affected > 0;
+    return result ? true : false;
   }
 
   /**
