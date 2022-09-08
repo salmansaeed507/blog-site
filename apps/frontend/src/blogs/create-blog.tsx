@@ -1,9 +1,12 @@
 import { gql, useMutation } from '@apollo/client';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormEvent, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { UploadImage } from '../common/upload-image';
 import { UploadedFile } from '../types/uploaded-file.interface';
+import * as yup from 'yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 const CREATE_BLOG_MUTATION = gql`
   mutation CreateBlog($createBlogInput: CreateBlogInput!) {
@@ -22,12 +25,33 @@ const CREATE_BLOG_MUTATION = gql`
   }
 `;
 
+interface IFormValues {
+  title: string;
+  shortDescription: string;
+  description: string;
+  content: string;
+  image: string | undefined;
+}
+
+const schema = yup
+  .object({
+    title: yup.string().required().max(100),
+    shortDescription: yup.string().required().max(250),
+    description: yup.string().required().max(500),
+    content: yup.string(),
+    image: yup.string(),
+  })
+  .required();
+
 export function CreateBlog() {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [content, setContent] = useState('');
-  const [image, setImage] = useState<UploadedFile>({});
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    formState: { errors },
+  } = useForm<IFormValues>({
+    resolver: yupResolver(schema),
+  });
   const navigate = useNavigate();
 
   const [mutationFunc, { loading, called }] = useMutation(
@@ -37,25 +61,20 @@ export function CreateBlog() {
     }
   );
 
-  function formHandler(e: FormEvent) {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<IFormValues> = (data) => {
     mutationFunc({
       variables: {
         createBlogInput: {
-          title,
-          description,
-          shortDescription,
-          content,
-          image: image.filename,
+          ...data,
         },
       },
     });
-  }
+  };
 
   if (called && loading) return <div>Saving...</div>;
 
   return (
-    <form onSubmit={(e) => formHandler(e)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Row>
         <p></p>
         <h3>Create Blog</h3>
@@ -66,37 +85,35 @@ export function CreateBlog() {
               autoFocus
               type="text"
               className="form-control"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              {...register('title')}
             />
           </p>
+          {errors.title && <p className="error">{errors.title.message}</p>}
 
           <p>Description</p>
           <p>
-            <textarea
-              className="form-control"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
+            <textarea className="form-control" {...register('description')} />
           </p>
+          {errors.description && (
+            <p className="error">{errors.description.message}</p>
+          )}
 
           <p>Short Description</p>
           <p>
             <textarea
               className="form-control"
-              value={shortDescription}
-              onChange={(e) => setShortDescription(e.target.value)}
+              {...register('shortDescription')}
             />
           </p>
+          {errors.shortDescription && (
+            <p className="error">{errors.shortDescription.message}</p>
+          )}
 
           <p>Content</p>
           <p>
-            <textarea
-              className="form-control"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <textarea className="form-control" {...register('content')} />
           </p>
+          {errors.content && <p className="error">{errors.content.message}</p>}
 
           <p>
             <Button type="submit">Create</Button>
@@ -105,7 +122,9 @@ export function CreateBlog() {
         <Col className="col-md-6">
           <p>Image</p>
           <p>
-            <UploadImage onChange={(f: UploadedFile) => setImage(f)} />
+            <UploadImage
+              onChange={(f: UploadedFile) => setValue('image', f.filename)}
+            />
           </p>
         </Col>
       </Row>
