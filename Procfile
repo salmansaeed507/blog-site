@@ -1,2 +1,1 @@
-release: npm run typeorm migration:run -- -d apps/api/datasource.ts
-release: npm run command api elastic-sync
+release: npm run typeorm migration:run -- -d apps/api/datasource.ts && npm run command api elastic-sync
