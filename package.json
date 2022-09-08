@@ -7,7 +7,8 @@
     "dev": "nx run-many --target=dev --all",
     "build": "nx run-many --target=build --all",
     "test": "nx test",
-    "command": "nx command"
+    "command": "nx command",
+    "typeorm": "ts-node -r tsconfig-paths/register --project=tsconfig.base.json  ./node_modules/typeorm/cli.js"
   },
   "private": true,
   "devDependencies": {
