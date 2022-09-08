@@ -35,3 +35,6 @@
     background-size: 100%;
     margin: 5px 0;
 }
+p.error {
+  color:red;font-size:14px;
+}
