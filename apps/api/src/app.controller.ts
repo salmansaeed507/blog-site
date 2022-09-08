@@ -6,13 +6,13 @@ export class AppController {
   @Public()
   @Get()
   index() {
-    return 'Hello World';
+    return 'Hello Worlds';
   }
 
   @Public()
-  @Get("hello")
+  @Get('hello')
   Hello() {
-    console.log("Node envs: ", process.env["NODE_ENV"])
-    return "node envs: " + process.env["NODE_ENV"];
+    console.log('Node envs: ', process.env['NODE_ENV']);
+    return 'node envs: ' + process.env['NODE_ENV'];
   }
 }
