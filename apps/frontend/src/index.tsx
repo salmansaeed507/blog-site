@@ -17,7 +17,6 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
-console.log(process.env['NX_GRAPHQL_SUBSCRIPTION_URL']);
 const wsLink = new GraphQLWsLink(
   createClient({
     url: process.env['NX_GRAPHQL_SUBSCRIPTION_URL'] || '',
