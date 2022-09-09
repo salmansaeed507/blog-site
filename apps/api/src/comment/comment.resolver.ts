@@ -21,6 +21,7 @@ import { Role } from '../user/role.enum';
 import { Reply } from './entities/reply.entity';
 import { GenericService } from '../generic/generic.service';
 import { PubSub } from 'graphql-subscriptions';
+import { Public } from '../user/auth/public.decorator';
 
 const pubSub = new PubSub();
 
@@ -84,6 +85,7 @@ export class CommentResolver {
     return comment;
   }
 
+  @Public()
   @Subscription(() => Comment)
   commentAdded() {
     return pubSub.asyncIterator('commentAdded');

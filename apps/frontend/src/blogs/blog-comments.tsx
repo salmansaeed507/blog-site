@@ -36,6 +36,13 @@ const COMMENTS_SUBSCRIPTION = gql`
       user {
         email
       }
+      replies {
+        id
+        comment
+        user {
+          email
+        }
+      }
     }
   }
 `;
@@ -59,8 +66,8 @@ export function BlogComments(props: {
   );
 
   const subResult = useSubscription(COMMENTS_SUBSCRIPTION, {
-    onSubscriptionComplete() {
-      console.log(subResult.data);
+    onSubscriptionData({ subscriptionData: { data } }) {
+      setComments((arr) => [...arr, data.commentAdded]);
     },
   });
 
@@ -68,11 +75,12 @@ export function BlogComments(props: {
     <>
       <PostComment
         blogId={props.blogId}
-        onPostComment={(c: any) => setComments((arr) => [...arr, c])}
+        // onPostComment={(c: any) => setComments((arr) => [...arr, c])}
       />
+      {subResult.error?.message}
       <div className="blog-comments col-md-6">
         {comments.map(function (cmt: any, i: number) {
-          return <Comment comment={cmt} key={i + 'c'} />;
+          return <Comment comment={cmt} key={i} />;
         })}
         {cursor && (
           <Button

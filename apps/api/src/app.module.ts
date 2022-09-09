@@ -29,7 +29,9 @@ const { entities, migrations, ...options } = dataSourceOptions;
       autoSchemaFile: './src/galschema.gql',
       playground: true,
       subscriptions: {
-        'graphql-ws': true,
+        'graphql-ws': {
+          path: '/graphql',
+        },
       },
     }),
     ConfigModule.forRoot({
