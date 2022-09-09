@@ -8,6 +8,7 @@ import { CommentService } from '../comment/comment.service';
 import BlogSearchService from './blog-search.service';
 import { UpdateBlogInput } from './dto/update-blog.input';
 import { GenericService } from '../generic/generic.service';
+import { ElasticSyncEntity } from '../generic/entities/elastic-sync-log.entity';
 
 @Injectable()
 export class BlogService {
@@ -102,8 +103,21 @@ export class BlogService {
    * @returns Promise<boolean>
    */
   async elasticSync(): Promise<boolean> {
-    return true;
-    // const blogs = await this.blogRepo.find();
-    // return this.blogSearchService.sync(blogs);
+    const blogs = await this.blogRepo
+      .createQueryBuilder('blog')
+      .leftJoin('elastic_sync_log', 'elog', 'blog.id = elog.entityId')
+      .where('elog.id IS NULL')
+      .getMany();
+    if (!blogs.length) {
+      console.log('No pending blog for elastic sync!');
+      return false;
+    }
+    const result = await this.blogSearchService.sync(blogs);
+    if (result) {
+      console.log(
+        blogs.length + ' blogs synced on elasticsearch index successfully!'
+      );
+    }
+    return result;
   }
 }

@@ -12,5 +12,6 @@ export class CommandService {
       await this.blogService.elasticSync();
     }
     console.log('Command Service: All commands executed successfully!');
+    return true;
   }
 }
