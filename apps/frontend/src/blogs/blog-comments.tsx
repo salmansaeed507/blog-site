@@ -83,7 +83,7 @@ export function BlogComments(props: {
           return <Comment comment={cmt} key={i} />;
         })}
         {called && loading && <CircularProgress />}
-        {!called && !loading && cursor && (
+        {!loading && cursor && (
           <Button
             variant="text"
             onClick={() => {
