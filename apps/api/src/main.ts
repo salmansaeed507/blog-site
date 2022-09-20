@@ -17,6 +17,12 @@ async function bootstrap() {
     );
     app.use('/public', express.static('./uploads'));
     app.listen(parseInt(process.env.PORT) || 3000);
+    if (process.env.NODE_ENV != 'production') {
+      app.use(async (req, res, next) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        next();
+      });
+    }
   }
 }
 bootstrap();

@@ -1,6 +1,11 @@
 import { gql, useQuery } from '@apollo/client';
-import { Card } from 'react-bootstrap';
-import { Loading } from '../Loading';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 import { BlogComments } from './blog-comments';
 
 const GET_BLOG = gql`
@@ -43,7 +48,7 @@ export function SingleBlog(props: { id: string | undefined }) {
     },
   });
 
-  if (loading) return <Loading />;
+  if (loading) return <CircularProgress />;
   if (error) return <div>Error!</div>;
 
   const blog = data.blog;
@@ -51,18 +56,21 @@ export function SingleBlog(props: { id: string | undefined }) {
   return (
     <div className="well">
       <Card>
-        <Card.Img
-          variant="top"
-          src={blog.imageUrl}
-          style={{ height: '400px', width: 'auto' }}
+        <CardMedia
+          component="img"
+          height="140"
+          image={blog.imageUrl}
+          alt="green iguana"
         />
-        <Card.Body>
-          <Card.Title>{blog.title}</Card.Title>
-          <Card.Text>{blog.content}</Card.Text>
-          <p className="user">By {blog.user?.email}</p>
-
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {blog.title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {blog.content}
+          </Typography>
           <BlogComments comments={blog.comments} blogId={blog.id} />
-        </Card.Body>
+        </CardContent>
       </Card>
     </div>
   );

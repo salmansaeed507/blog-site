@@ -1,9 +1,9 @@
 import { gql, useMutation } from '@apollo/client';
-import { Button } from 'react-bootstrap';
 import { Loading } from './Loading';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, CircularProgress, TextField } from '@mui/material';
 
 const POST_COMMENT = gql`
   mutation PostComment($blogId: String!, $postCommentInput: PostCommentInput!) {
@@ -70,15 +70,15 @@ export function PostComment(props: {
     });
   };
 
-  if (called && loading) return <Loading />;
+  if (called && loading) return <CircularProgress />;
   if (error) return <p style={{ color: 'red' }}>{error.message}</p>;
 
   return (
     <div>
       {!watchIsOpen ? (
         <Button
-          variant="link"
-          size="sm"
+          variant="text"
+          size="small"
           onClick={(e) => setValue('isOpen', !watchIsOpen)}
         >
           Comment
@@ -86,18 +86,21 @@ export function PostComment(props: {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <p>
-            <textarea
+            <TextField
+              fullWidth
+              multiline
+              variant="standard"
               autoFocus
-              className="form-control"
               {...register('comment')}
+              error={!!errors.comment || false}
+              helperText={errors.comment?.message || ''}
             />
           </p>
-          {errors.comment && <p className="error">{errors.comment.message}</p>}
           <p>
-            <Button variant="primary" size="sm" type="submit">
+            <Button variant="contained" size="small" type="submit">
               Post Comment
             </Button>
-            <Button variant="link" size="sm" onClick={(e) => reset()}>
+            <Button variant="text" size="small" onClick={(e) => reset()}>
               Cancel
             </Button>
           </p>

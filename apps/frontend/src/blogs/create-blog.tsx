@@ -1,12 +1,13 @@
 import { gql, useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormEvent, useState } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { UploadImage } from '../common/upload-image';
 import { UploadedFile } from '../types/uploaded-file.interface';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button, CircularProgress, TextField, Typography } from '@mui/material';
 
 const CREATE_BLOG_MUTATION = gql`
   mutation CreateBlog($createBlogInput: CreateBlogInput!) {
@@ -71,52 +72,63 @@ export function CreateBlog() {
     });
   };
 
-  if (called && loading) return <div>Saving...</div>;
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Row>
         <p></p>
-        <h3>Create Blog</h3>
+        <Typography variant="h4">Create Blog</Typography>
         <Col className="col-md-6">
-          <p>Title</p>
           <p>
-            <input
-              autoFocus
-              type="text"
-              className="form-control"
+            <TextField
+              fullWidth
+              label="Title"
+              variant="standard"
               {...register('title')}
-            />
+              error={!!errors.title || false}
+              helperText={errors.title?.message || ''}
+            ></TextField>
           </p>
-          {errors.title && <p className="error">{errors.title.message}</p>}
-
-          <p>Description</p>
           <p>
-            <textarea className="form-control" {...register('description')} />
+            <TextField
+              fullWidth
+              label="Description"
+              variant="standard"
+              multiline
+              {...register('description')}
+              error={!!errors.description || false}
+              helperText={errors.description?.message || ''}
+            ></TextField>
           </p>
-          {errors.description && (
-            <p className="error">{errors.description.message}</p>
-          )}
-
-          <p>Short Description</p>
           <p>
-            <textarea
-              className="form-control"
+            <TextField
+              fullWidth
+              label="Short Description"
+              variant="standard"
+              multiline
               {...register('shortDescription')}
-            />
+              error={!!errors.shortDescription || false}
+              helperText={errors.shortDescription?.message || ''}
+            ></TextField>
           </p>
-          {errors.shortDescription && (
-            <p className="error">{errors.shortDescription.message}</p>
-          )}
-
-          <p>Content</p>
           <p>
-            <textarea className="form-control" {...register('content')} />
+            <TextField
+              fullWidth
+              label="Content"
+              variant="standard"
+              multiline
+              {...register('content')}
+              error={!!errors.content || false}
+              helperText={errors.content?.message || ''}
+            ></TextField>
           </p>
-          {errors.content && <p className="error">{errors.content.message}</p>}
-
           <p>
-            <Button type="submit">Create</Button>
+            {called && loading ? (
+              <CircularProgress />
+            ) : (
+              <Button variant="contained" type="submit">
+                Create
+              </Button>
+            )}
           </p>
         </Col>
         <Col className="col-md-6">

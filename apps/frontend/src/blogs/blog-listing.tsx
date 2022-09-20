@@ -1,8 +1,9 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { FormEvent, useEffect, useState } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { Blog } from '../Blog';
 import { io } from 'socket.io-client';
+import { Button, CircularProgress, TextField } from '@mui/material';
 
 const GET_SINGLE_BLOG = gql`
   query Blog($blogId: String!) {
@@ -88,7 +89,7 @@ export function BlogListing() {
   const [queryFunc] = useLazyQuery(SEARCH_BLOGS);
   const { loading, error, data } = useQuery(GET_DOGS);
 
-  if (loading) return <div>Loading</div>;
+  if (loading) return <CircularProgress />;
   if (error) return <p style={{ color: 'red' }}>{error.message}</p>;
 
   return (
@@ -97,17 +98,17 @@ export function BlogListing() {
         <Row>
           <Col className="col-md-8">
             <p>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search Blogs"
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Search"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
             </p>
           </Col>
           <Col className="col-md-4">
-            <Button type="submit" className="form-control">
+            <Button variant="contained" type="submit" className="form-control">
               Search
             </Button>
           </Col>

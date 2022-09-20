@@ -1,10 +1,12 @@
 import react, { FormEvent, useState } from 'react';
-import { Alert, Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+import Button from '@mui/material/Button';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { isAuthenticated, loginUser, setToken } from './authFunc';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Alert, CircularProgress, TextField, Typography } from '@mui/material';
 
 interface IFormValues {
   email: string;
@@ -24,20 +26,25 @@ export function Login() {
     handleSubmit,
     register,
     formState: { errors },
-    setError,
   } = useForm<IFormValues>({
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<IFormValues> = (data) => {
+    setIsLoading(true);
     loginUser(data.email, data.password)
       .then((data: any) => {
         setToken(data.data.data.login);
         navigate('/');
       })
       .catch((e) => {
-        setError('loginFailed', { message: 'Email or Password is incorrect!' });
+        setError('Email or Password is incorrect!');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -47,33 +54,38 @@ export function Login() {
     <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
       <Row>
         <Col className="col-3 offset-4">
-          <h2>Login</h2>
+          {error && <Alert severity="error">{error}</Alert>}
+          <Typography variant="h4">Login</Typography>
           {errors.loginFailed && (
             <p className="error">Email or pasword is incorrect</p>
           )}
-          <label>Email</label>
           <p>
-            <input
-              type="text"
-              autoFocus
-              className="form-control"
+            <TextField
+              error={errors.email ? true : false}
+              helperText={errors.email ? errors.email.message : ''}
+              label="Email"
+              variant="standard"
               {...register('email', { required: true })}
             />
           </p>
-          {errors.email && <p className="error">{errors.email.message}</p>}
-          <label>Password</label>
           <p>
-            <input
+            <TextField
+              error={errors.password ? true : false}
+              helperText={errors.password ? errors.password.message : ''}
               type="password"
-              className="form-control"
+              label="Password"
+              variant="standard"
               {...register('password')}
             />
           </p>
-          {errors.password && (
-            <p className="error">{errors.password.message}</p>
-          )}
           <p>
-            <Button type="submit">Login</Button>
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <Button variant="contained" type="submit">
+                Login
+              </Button>
+            )}
           </p>
         </Col>
       </Row>

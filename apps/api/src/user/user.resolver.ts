@@ -12,7 +12,7 @@ import { SignupService } from './signup.service';
 export class UserResolver {
   constructor(
     private readonly signupService: SignupService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   /**
@@ -28,7 +28,7 @@ export class UserResolver {
   async login(
     @Args('username') username: string,
     @Args('password') password: string,
-    @Context('req') { user }: any,
+    @Context('req') { user }: any
   ): Promise<string> {
     return this.authService.login(user as User);
   }

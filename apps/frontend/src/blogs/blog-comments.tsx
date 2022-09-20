@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useSubscription } from '@apollo/client';
+import { Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { Comment } from '../Comment';
 import { PostComment } from '../PostComment';
 
@@ -82,9 +82,10 @@ export function BlogComments(props: {
         {comments.map(function (cmt: any, i: number) {
           return <Comment comment={cmt} key={i} />;
         })}
-        {cursor && (
+        {called && loading && <CircularProgress />}
+        {!called && !loading && cursor && (
           <Button
-            variant="link"
+            variant="text"
             onClick={() => {
               loadComments({
                 variables: {
