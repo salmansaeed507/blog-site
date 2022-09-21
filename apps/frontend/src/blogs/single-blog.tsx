@@ -56,12 +56,7 @@ export function SingleBlog(props: { id: string | undefined }) {
   return (
     <div className="well">
       <Card>
-        <CardMedia
-          component="img"
-          height="140"
-          image={blog.imageUrl}
-          alt="green iguana"
-        />
+        <CardMedia component="img" image={blog.imageUrl} alt="green iguana" />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {blog.title}

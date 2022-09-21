@@ -75,6 +75,7 @@ export function BlogListing() {
     if (!keyword) {
       setBlogs([]);
       setIsSearch(false);
+      return;
     }
     queryFunc({
       variables: {
@@ -86,10 +87,10 @@ export function BlogListing() {
     });
   }
 
-  const [queryFunc] = useLazyQuery(SEARCH_BLOGS);
+  const [queryFunc, searchData] = useLazyQuery(SEARCH_BLOGS);
   const { loading, error, data } = useQuery(GET_DOGS);
 
-  if (loading) return <CircularProgress />;
+  if (loading || searchData.loading) return <CircularProgress />;
   if (error) return <p style={{ color: 'red' }}>{error.message}</p>;
 
   return (
@@ -103,6 +104,7 @@ export function BlogListing() {
                 variant="outlined"
                 label="Search"
                 value={keyword}
+                size="small"
                 onChange={(e) => setKeyword(e.target.value)}
               />
             </p>

@@ -82,7 +82,7 @@ export function BlogComments(props: {
         {comments.map(function (cmt: any, i: number) {
           return <Comment comment={cmt} key={i} />;
         })}
-        {called && loading && <CircularProgress />}
+        {called && loading && <CircularProgress size={30} />}
         {!loading && cursor && (
           <Button
             variant="text"

@@ -19,12 +19,7 @@ export function Blog(props: { blog: any }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea onClick={() => navigate('/blogs/' + blog.id)}>
-        <CardMedia
-          component="img"
-          height="140"
-          image={blog.imageUrl}
-          alt="green iguana"
-        />
+        <CardMedia component="img" image={blog.imageUrl} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {blog.title}
